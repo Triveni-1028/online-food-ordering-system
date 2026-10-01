@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Online Food Ordering</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header>
+      <h1>Online Food Ordering System</h1>
+      <p>Restaurant • Menu • Cart • Wishlist • Orders</p>
+    </header>
+    <nav>
+      <button onclick="show('restaurants')">Restaurants</button>
+      <button onclick="show('menu')">Menu</button>
+      <button onclick="show('cart')">Cart</button>
+      <button onclick="show('wishlist')">Wishlist</button>
+      <button onclick="show('orders')">Orders</button>
+    </nav>
+    <main>
+      <section id="restaurants">
+        <h2>Restaurant Management</h2>
+        <form id="rf">
+          <input id="rn" placeholder="Name" required>
+          <input id="rl" placeholder="Location" required>
+          <input id="rp" placeholder="Phone">
+          <button>Add Restaurant</button>
+        </form>
+        <div id="rls">
+        </div>
+      </section>
+      <section id="menu" class="hide">
+        <h2>Menu Management</h2>
+        <form id="mf">
+          <input id="mn" placeholder="Food item" required>
+          <input id="mr" type="number" placeholder="Restaurant ID" required>
+          <input id="mp" type="number" step=".01" placeholder="Price" required>
+          <label>
+            <input id="ma" type="checkbox" checked> Available</label>
+            <button>Add Food</button>
+          </form>
+          <div id="mls">
+          </div>
+        </section>
+        <section id="cart" class="hide">
+          <h2>Cart</h2>
+          <div id="cls">
+          </div>
+          <button onclick="placeOrder()">Place Order</button>
+        </section>
+        <section id="wishlist" class="hide">
+          <h2>Wishlist</h2>
+          <div id="wls">
+          </div>
+        </section>
+        <section id="orders" class="hide">
+          <h2>Orders</h2>
+          <div id="ols">
+          </div>
+        </section>
+      </main>
+      <script src="app.js">
+    </script>
+  </body>
+</html>
