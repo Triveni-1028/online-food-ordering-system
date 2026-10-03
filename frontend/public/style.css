@@ -1,47 +1,106 @@
 body {
-  font-family:Arial;
-  margin:0;
-  background:#f5f5f5}
+  font-family: Arial;
+  margin: 0;
+  background: #f5f5f5;
+}
 
 header {
-  background:#07375e;
-  color:white;
-  text-align:center;
-  padding:22px}
+  background: #07375e;
+  color: white;
+  text-align: center;
+  padding: 22px;
+}
 
 nav {
-  text-align:center;
-  background:white;
-  padding:12px}
+  text-align: center;
+  background: white;
+  padding: 12px;
+}
 
 button {
-  background:#62790f;
-  color:white;
-  border:0;
-  border-radius:6px;
-  padding:9px;
-  margin:4px}
+  background: #62790f;
+  color: white;
+  border: 0;
+  border-radius: 6px;
+  padding: 9px;
+  margin: 4px;
+  cursor: pointer;
+}
 
 main {
-  max-width:1050px;
-  margin:20px auto;
-  padding:12px}
+  max-width: 1050px;
+  margin: 20px auto;
+  padding: 12px;
+}
 
 section {
-  background:white;
-  padding:18px;
-  border-radius:10px;
-  margin-bottom:18px}
+  background: white;
+  padding: 18px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
 
 .hide {
-  display:none}
+  display: none;
+}
 
 .card {
-  border:1px solid #ddd;
-  border-radius:7px;
-  padding:10px;
-  margin:8px 0}
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  padding: 10px;
+  margin: 8px 0;
+}
 
-input {
-  padding:8px;
-  margin:4px}
+input,
+select {
+  padding: 8px;
+  margin: 4px;
+}
+
+
+/* DROPDOWN */
+
+.drop {
+  display: inline-block;
+  position: relative;
+}
+
+.drop-content {
+  display: none;
+  position: absolute;
+  background: white;
+  min-width: 170px;
+  box-shadow: 0 2px 8px #aaa;
+  z-index: 1;
+}
+
+.drop-content button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: white;
+  color: #222;
+}
+
+.drop-content button:hover {
+  background: #eee;
+}
+
+.drop:hover .drop-content {
+  display: block;
+}
+
+
+/* WISHLIST */
+
+.sparkle {
+  font-size: 18px;
+  background: #62790f;
+}
+
+
+/* CANCEL */
+
+.cancel {
+  background: #a83232;
+}

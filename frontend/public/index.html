@@ -1,66 +1,224 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Online Food Ordering</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <header>
-      <h1>Online Food Ordering System</h1>
-      <p>Restaurant • Menu • Cart • Wishlist • Orders</p>
-    </header>
-    <nav>
-      <button onclick="show('restaurants')">Restaurants</button>
-      <button onclick="show('menu')">Menu</button>
-      <button onclick="show('cart')">Cart</button>
-      <button onclick="show('wishlist')">Wishlist</button>
-      <button onclick="show('orders')">Orders</button>
-    </nav>
-    <main>
-      <section id="restaurants">
-        <h2>Restaurant Management</h2>
-        <form id="rf">
-          <input id="rn" placeholder="Name" required>
-          <input id="rl" placeholder="Location" required>
-          <input id="rp" placeholder="Phone">
-          <button>Add Restaurant</button>
-        </form>
-        <div id="rls">
-        </div>
-      </section>
-      <section id="menu" class="hide">
-        <h2>Menu Management</h2>
-        <form id="mf">
-          <input id="mn" placeholder="Food item" required>
-          <input id="mr" type="number" placeholder="Restaurant ID" required>
-          <input id="mp" type="number" step=".01" placeholder="Price" required>
-          <label>
-            <input id="ma" type="checkbox" checked> Available</label>
-            <button>Add Food</button>
-          </form>
-          <div id="mls">
-          </div>
-        </section>
-        <section id="cart" class="hide">
-          <h2>Cart</h2>
-          <div id="cls">
-          </div>
-          <button onclick="placeOrder()">Place Order</button>
-        </section>
-        <section id="wishlist" class="hide">
-          <h2>Wishlist</h2>
-          <div id="wls">
-          </div>
-        </section>
-        <section id="orders" class="hide">
-          <h2>Orders</h2>
-          <div id="ols">
-          </div>
-        </section>
-      </main>
-      <script src="app.js">
-    </script>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Online Food Ordering</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>Online Food Ordering System</h1>
+  <p>Restaurant • Menu • Cart • Wishlist • Orders</p>
+</header>
+
+<nav>
+
+  <!-- RESTAURANTS DROPDOWN -->
+  <div class="drop">
+    <button>Restaurants ▾</button>
+
+    <div class="drop-content">
+      <button onclick="show('restaurants')">
+        Select Restaurant
+      </button>
+
+      <button onclick="show('restaurantManage')">
+        Manage Restaurants
+      </button>
+    </div>
+  </div>
+
+
+  <!-- MENU DROPDOWN -->
+  <div class="drop">
+    <button>Menu ▾</button>
+
+    <div class="drop-content">
+      <button onclick="show('menu')">
+        View Menu
+      </button>
+
+      <button onclick="show('menuManage')">
+        Manage Menu
+      </button>
+    </div>
+  </div>
+
+
+  <!-- NORMAL BUTTONS -->
+  <button onclick="show('cart')">
+    Cart
+  </button>
+
+  <button onclick="show('wishlist')">
+    Wishlist
+  </button>
+
+  <button onclick="show('orders')">
+    Orders
+  </button>
+
+</nav>
+
+
+<main>
+
+  <!-- RESTAURANTS -->
+  <section id="restaurants">
+
+    <h2>Select Restaurant</h2>
+
+    <div id="restaurantList"></div>
+
+  </section>
+
+
+  <!-- RESTAURANT MANAGEMENT -->
+  <section id="restaurantManage" class="hide">
+
+    <h2>Restaurant Management</h2>
+
+    <form id="rf">
+
+      <input id="rn" placeholder="Name" required>
+
+      <input id="rl" placeholder="Location" required>
+
+      <input id="rp" placeholder="Phone">
+
+      <button>Add Restaurant</button>
+
+    </form>
+
+    <div id="rls"></div>
+
+  </section>
+
+
+  <!-- MENU -->
+  <section id="menu" class="hide">
+
+    <h2>Menu</h2>
+
+    <label>Select Restaurant:</label>
+
+    <select id="restaurantSelect" onchange="loadMenu()">
+
+      <option value="">
+        Select Restaurant
+      </option>
+
+    </select>
+
+    <div id="mls"></div>
+
+  </section>
+
+
+  <!-- MENU MANAGEMENT -->
+  <section id="menuManage" class="hide">
+
+    <h2>Menu Management</h2>
+
+    <form id="mf">
+
+      <input
+        id="mn"
+        placeholder="Food item"
+        required
+      >
+
+      <input
+        id="mr"
+        type="number"
+        placeholder="Restaurant ID"
+        required
+      >
+
+      <input
+        id="mp"
+        type="number"
+        step=".01"
+        placeholder="Price"
+        required
+      >
+
+      <label>
+        <input
+          id="ma"
+          type="checkbox"
+          checked
+        >
+        Available
+      </label>
+
+      <button>Add Food</button>
+
+    </form>
+
+    <div id="manageMenuList"></div>
+
+  </section>
+
+
+  <!-- CART -->
+  <section id="cart" class="hide">
+
+    <h2>Cart</h2>
+
+    <div id="cls"></div>
+
+    <p id="total"></p>
+
+    <button onclick="payment()">
+      Proceed to Payment
+    </button>
+
+  </section>
+
+
+  <!-- PAYMENT -->
+  <section id="payment" class="hide">
+
+    <h2>Payment</h2>
+
+    <div id="paymentDetails"></div>
+
+    <button onclick="pay()">
+      Pay Now
+    </button>
+
+  </section>
+
+
+  <!-- WISHLIST -->
+  <section id="wishlist" class="hide">
+
+    <h2>Wishlist</h2>
+
+    <div id="wls"></div>
+
+  </section>
+
+
+  <!-- ORDERS -->
+  <section id="orders" class="hide">
+
+    <h2>Orders</h2>
+
+    <div id="ols"></div>
+
+  </section>
+
+</main>
+
+
+<script src="app.js"></script>
+
+</body>
+
 </html>

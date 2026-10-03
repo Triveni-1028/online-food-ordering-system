@@ -1,5 +1,132 @@
 {
-  "menu": [],
-  "cart": [],
-  "wishlist": []
+  "menu": [
+    {
+      "id": 1,
+      "name": "Paneer Pizza",
+      "restaurantId": 1,
+      "price": 250,
+      "availability": true
+    },
+    {
+      "id": 2,
+      "name": "Veg Burger",
+      "restaurantId": 1,
+      "price": 120,
+      "availability": true
+    },
+    {
+      "id": 3,
+      "name": "Paneer Biryani",
+      "restaurantId": 1,
+      "price": 180,
+      "availability": true
+    },
+    {
+      "id": 4,
+      "name": "Masala Dosa",
+      "restaurantId": 2,
+      "price": 100,
+      "availability": true
+    },
+    {
+      "id": 5,
+      "name": "Veg Thali",
+      "restaurantId": 2,
+      "price": 180,
+      "availability": true
+    },
+    {
+      "id": 6,
+      "name": "Veg Sandwich",
+      "restaurantId": 2,
+      "price": 90,
+      "availability": true
+    },
+    {
+      "id": 7,
+      "name": "Cheese Pasta",
+      "restaurantId": 3,
+      "price": 200,
+      "availability": true
+    },
+    {
+      "id": 8,
+      "name": "French Fries",
+      "restaurantId": 3,
+      "price": 100,
+      "availability": true
+    },
+    {
+      "id": 9,
+      "name": "Veg Noodles",
+      "restaurantId": 3,
+      "price": 150,
+      "availability": true
+    },
+    {
+      "id": 10,
+      "name": "Chole Bhature",
+      "restaurantId": 4,
+      "price": 160,
+      "availability": true
+    },
+    {
+      "id": 11,
+      "name": "Paneer Roll",
+      "restaurantId": 4,
+      "price": 130,
+      "availability": true
+    },
+    {
+      "id": 12,
+      "name": "Cheese Sandwich",
+      "restaurantId": 4,
+      "price": 120,
+      "availability": true
+    },
+    {
+      "id": 13,
+      "name": "manchurian gravy",
+      "restaurantId": -5,
+      "price": 500,
+      "availability": true
+    },
+    {
+      "id": 14,
+      "name": "bahubali dosa",
+      "restaurantId": 5,
+      "price": 500,
+      "availability": true
+    },
+    {
+      "id": 15,
+      "name": "kattapa panipuri",
+      "restaurantId": 5,
+      "price": 100,
+      "availability": true
+    },
+    {
+      "id": 16,
+      "name": "bhel puri",
+      "restaurantId": 6,
+      "price": 60,
+      "availability": true
+    },
+    {
+      "id": 17,
+      "name": "misal pav",
+      "restaurantId": 7,
+      "price": 60,
+      "availability": true
+    }
+  ],
+  "cart": [
+    {
+      "menuItemId": 1,
+      "quantity": 2
+    }
+  ],
+  "wishlist": [
+    1
+  ]
 }

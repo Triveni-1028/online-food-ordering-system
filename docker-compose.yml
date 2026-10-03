@@ -1,17 +1,31 @@
 services:
+
   restaurant-service:
     build: ./restaurant-service
     image: food-restaurant:1.0.0
-    ports: ["8001:8001"]
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./restaurant-service/data:/app/data
+
   menu-service:
     build: ./menu-service
     image: food-menu:1.0.0
-    ports: ["8002:8002"]
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./menu-service/data:/app/data
+
   order-service:
     build: ./order-service
     image: food-order:1.0.0
-    ports: ["8003:8003"]
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./order-service/data:/app/data
+
   frontend:
     build: ./frontend
     image: food-frontend:1.0.0
-    ports: ["8004:8004"]
+    ports:
+      - "8004:8004"

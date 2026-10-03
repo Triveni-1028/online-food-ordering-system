@@ -1,3 +1,53 @@
 {
-  "restaurants": []
+  "restaurants": [
+    {
+      "id": 1,
+      "name": "Spice Garden",
+      "location": "Andheri (W)",
+      "phone": "9979896995",
+      "status": "Open"
+    },
+    {
+      "id": 2,
+      "name": "Sandip Veg",
+      "location": "Kandivali (E)",
+      "phone": "7767584937",
+      "status": "Open"
+    },
+    {
+      "id": 3,
+      "name": "Food Corner",
+      "location": "Malad (E)",
+      "phone": "8878486858",
+      "status": "Open"
+    },
+    {
+      "id": 4,
+      "name": "Tasty Bites",
+      "location": "Thane (W)",
+      "phone": "9467582910",
+      "status": "Open"
+    },
+    {
+      "id": 5,
+      "name": "Darshan101",
+      "location": "kandiwali(E)",
+      "phone": "7715952698",
+      "status": "Open"
+    },
+    {
+      "id": 6,
+      "name": "asha bhel",
+      "location": "ahilyanagar",
+      "phone": "9979896995",
+      "status": "Open"
+    },
+    {
+      "id": 7,
+      "name": "abc",
+      "location": "goregav(W)",
+      "phone": "8890765432",
+      "status": "Open"
+    }
+  ]
 }

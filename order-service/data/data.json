@@ -1,3 +1,40 @@
 {
-  "orders": []
+  "orders": [
+    {
+      "id": 1,
+      "customerName": "Demo Customer",
+      "restaurantId": 1,
+      "items": [
+        {
+          "menuItemId": 1,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 250,
+      "address": "Demo Address",
+      "status": "Cancelled",
+      "deliveryPersonName": "Rahul Patil",
+      "deliveryPersonPhone": "9876543210",
+      "createdAt": "2026-10-02T11:44:32.406Z",
+      "cancelledAt": "2026-10-02T11:44:45.358Z"
+    },
+    {
+      "id": 2,
+      "customerName": "Demo Customer",
+      "restaurantId": 1,
+      "items": [
+        {
+          "menuItemId": 1,
+          "quantity": 1
+        }
+      ],
+      "totalAmount": 250,
+      "address": "Demo Address",
+      "status": "Cancelled",
+      "deliveryPersonName": "Rahul Patil",
+      "deliveryPersonPhone": "9876543210",
+      "createdAt": "2026-10-03T13:39:34.934Z",
+      "cancelledAt": "2026-10-03T13:39:57.787Z"
+    }
+  ]
 }
