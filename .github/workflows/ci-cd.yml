@@ -1,4 +1,4 @@
-
+```yaml
 name: Food Ordering CI/CD
 
 on:
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 env:
-  NODE_VERSION: 24
+  NODE_VERSION: "24"
 
 jobs:
   test:
@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         service:
           - restaurant-service
@@ -33,10 +34,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ${{ matrix.service }}/package-lock.json
 
       - name: Install dependencies
         working-directory: ${{ matrix.service }}
-        run: npm install
+        run: npm ci
 
       - name: Run tests
         working-directory: ${{ matrix.service }}
@@ -55,12 +58,18 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Read application version
         id: version
         shell: bash
-        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+        run: |
+          VERSION="$(tr -d '\r\n' < VERSION)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Create version artifact
+        shell: bash
         run: |
           echo "Application version: ${{ steps.version.outputs.version }}" > build-version.txt
           echo "Commit: $GITHUB_SHA" >> build-version.txt
@@ -88,34 +97,40 @@ jobs:
         with:
           image-ref: food-restaurant:${{ steps.version.outputs.version }}
           severity: CRITICAL,HIGH
-          exit-code: '0'
+          exit-code: "0"
 
       - name: Scan menu image
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: food-menu:${{ steps.version.outputs.version }}
           severity: CRITICAL,HIGH
-          exit-code: '0'
+          exit-code: "0"
 
       - name: Scan order image
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: food-order:${{ steps.version.outputs.version }}
           severity: CRITICAL,HIGH
-          exit-code: '0'
+          exit-code: "0"
 
       - name: Scan frontend image
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: food-frontend:${{ steps.version.outputs.version }}
           severity: CRITICAL,HIGH
-          exit-code: '0'
+          exit-code: "0"
 
   deploy:
     name: Kubernetes Deployment
     needs: build
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_K8S_DEPLOY == 'true' }}
+    if: >-
+      ${{
+        github.event_name == 'push' &&
+        github.ref == 'refs/heads/main' &&
+        vars.ENABLE_K8S_DEPLOY == 'true'
+      }}
     runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 15
 
     steps:
       - name: Checkout source code
@@ -125,65 +140,71 @@ jobs:
         shell: powershell
         run: |
           docker version
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           kubectl config current-context
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           kubectl get nodes
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
-      - name: Build versioned images on local Docker Desktop
+      - name: Build versioned images
         shell: powershell
         run: |
           $version = (Get-Content VERSION -Raw).Trim()
 
           docker build -t "food-restaurant:$version" ./restaurant-service
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           docker build -t "food-menu:$version" ./menu-service
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           docker build -t "food-order:$version" ./order-service
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           docker build -t "food-frontend:$version" ./frontend
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: Apply Kubernetes manifests
         shell: powershell
         run: |
           kubectl apply -f kubernetes/
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
-      - name: Update versioned images
+      - name: Update deployment images
         shell: powershell
         run: |
           $version = (Get-Content VERSION -Raw).Trim()
 
           kubectl set image deployment/restaurant-service "restaurant-service=food-restaurant:$version"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           kubectl set image deployment/menu-service "menu-service=food-menu:$version"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           kubectl set image deployment/order-service "order-service=food-order:$version"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           kubectl set image deployment/food-frontend "food-frontend=food-frontend:$version"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
-      - name: Check deployment status
+      - name: Verify rollout
         shell: powershell
         run: |
           kubectl rollout status deployment/restaurant-service --timeout=180s
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           kubectl rollout status deployment/menu-service --timeout=180s
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           kubectl rollout status deployment/order-service --timeout=180s
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
           kubectl rollout status deployment/food-frontend --timeout=180s
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+          kubectl get deployments
+          kubectl get pods
+          kubectl get services
+```
+
