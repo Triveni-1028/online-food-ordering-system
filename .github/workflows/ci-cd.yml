@@ -1,4 +1,3 @@
-```yaml
 name: Food Ordering CI/CD
 
 on:
