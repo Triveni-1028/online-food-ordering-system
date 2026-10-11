@@ -1,3 +1,4 @@
+
 name: Food Ordering CI/CD
 
 on:
@@ -16,6 +17,7 @@ jobs:
   test:
     name: Test and Security Checks
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         service:
@@ -112,38 +114,76 @@ jobs:
   deploy:
     name: Kubernetes Deployment
     needs: build
-    if: ${{ vars.ENABLE_K8S_DEPLOY == 'true' }}
-    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.ENABLE_K8S_DEPLOY == 'true' }}
+    runs-on: [self-hosted, Windows, X64]
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v4
-        with:
-          version: latest
-
-      - name: Configure Kubernetes access
-        shell: bash
+      - name: Verify Docker and Kubernetes access
+        shell: powershell
         run: |
-          mkdir -p "$HOME/.kube"
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > "$HOME/.kube/config"
+          docker version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          kubectl config current-context
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          kubectl get nodes
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build versioned images on local Docker Desktop
+        shell: powershell
+        run: |
+          $version = (Get-Content VERSION -Raw).Trim()
+
+          docker build -t "food-restaurant:$version" ./restaurant-service
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          docker build -t "food-menu:$version" ./menu-service
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          docker build -t "food-order:$version" ./order-service
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          docker build -t "food-frontend:$version" ./frontend
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Apply Kubernetes manifests
-        run: kubectl apply -f kubernetes/
+        shell: powershell
+        run: |
+          kubectl apply -f kubernetes/
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Update versioned images
+        shell: powershell
         run: |
-          VERSION=$(cat VERSION)
-          kubectl set image deployment/restaurant-service restaurant-service=food-restaurant:${VERSION}
-          kubectl set image deployment/menu-service menu-service=food-menu:${VERSION}
-          kubectl set image deployment/order-service order-service=food-order:${VERSION}
-          kubectl set image deployment/food-frontend food-frontend=food-frontend:${VERSION}
+          $version = (Get-Content VERSION -Raw).Trim()
+
+          kubectl set image deployment/restaurant-service "restaurant-service=food-restaurant:$version"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          kubectl set image deployment/menu-service "menu-service=food-menu:$version"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          kubectl set image deployment/order-service "order-service=food-order:$version"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          kubectl set image deployment/food-frontend "food-frontend=food-frontend:$version"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Check deployment status
+        shell: powershell
         run: |
-          kubectl rollout status deployment/restaurant-service
-          kubectl rollout status deployment/menu-service
-          kubectl rollout status deployment/order-service
-          kubectl rollout status deployment/food-frontend
+          kubectl rollout status deployment/restaurant-service --timeout=180s
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          kubectl rollout status deployment/menu-service --timeout=180s
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          kubectl rollout status deployment/order-service --timeout=180s
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          kubectl rollout status deployment/food-frontend --timeout=180s
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
